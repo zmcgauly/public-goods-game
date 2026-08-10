@@ -1,0 +1,16 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instruction Quiz{{ endblock }}
+
+{{ block content }}
+<p>Answer the quiz question correctly before the game starts.</p>
+
+<h4>Leaving the Experiment</h4>
+<p>
+    You are free to leave at any time, regardless of the completion status of the experiment.
+    Should you choose to leave before the experiment is complete, you will still be given your
+    show-up fee but will sacrifice any payoff from your decisions.
+</p>
+
+{{ formfield 'instruction_quiz_answer' }}
+{{ next_button }}
+{{ endblock }}

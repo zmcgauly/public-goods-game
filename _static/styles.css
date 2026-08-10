@@ -1,0 +1,171 @@
+.ball-count {
+
+font-size: 1rem;
+font-weight: bold;
+margin: 0.35rem 0;
+
+}
+
+.ball-stack {
+
+height: 220px;
+width: 32px;
+display: flex;
+flex-direction: column-reverse;
+align-items: center;
+gap: 3px;
+margin: 0.5rem auto;
+padding: 5px;
+border: 2px solid #2d3748;
+border-radius: 18px 18px 6px 6px;
+background: #f8fafc;
+box-sizing: border-box;
+overflow: hidden;
+
+}
+
+.stack-ball {
+
+width: 18px;
+height: 18px;
+border-radius: 50%;
+background: #2563eb;
+border: 2px solid #1d4ed8;
+box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.45);
+box-sizing: border-box;
+flex: 0 0 auto;
+
+}
+
+.balls-display {
+
+font-size: 1.2rem;
+font-weight: bold;
+margin: 1rem 0;
+
+}
+
+.btn-add-ball, .btn-remove-ball {
+
+padding: 0.25rem 0.5rem;
+margin: 0.1rem;
+
+}
+
+.contribution-slots {
+
+display: flex;
+gap: 0.5rem;
+overflow-x: auto;
+padding: 1rem 0;
+
+}
+
+.estimation-section {
+
+margin: 2rem 0;
+padding: 1rem;
+border: 1px solid #ccc;
+border-radius: 4px;
+
+}
+
+.guess-fields {
+
+margin: 1rem 0;
+
+}
+
+.guess-fields label {
+
+display: block;
+margin-top: 0.5rem;
+font-weight: bold;
+
+}
+
+.hidden-field {
+display: none;
+}
+
+.player-card {
+
+border: 1px solid #ddd;
+padding: 1rem;
+text-align: center;
+border-radius: 4px;
+width: 100%;
+box-sizing: border-box;
+display: flex;
+flex-direction: column;
+align-items: center;
+
+}
+
+.player-card img {
+
+display: block;
+max-width: min(180px, 100%);
+height: 180px;
+margin: 0 auto;
+border-radius: 4px;
+object-fit: contain;
+
+}
+
+.player-card p:first-of-type {
+
+margin-top: 1rem;
+
+}
+
+.players-grid {
+
+display: grid;
+grid-template-columns: repeat(3, minmax(0, 1fr));
+gap: 1rem;
+margin: 1rem 0;
+
+}
+
+.profile-image {
+
+max-width: 200px;
+height: auto;
+margin: 1rem 0;
+
+}
+
+.profile-section {
+
+margin: 2rem 0;
+padding: 1rem;
+border: 1px solid #ddd;
+border-radius: 4px;
+
+}
+
+.slot {
+
+border: 1px solid #333;
+padding: 0.5rem;
+text-align: center;
+min-width: 72px;
+
+}
+
+.slot-header {
+
+font-weight: bold;
+margin-bottom: 0.5rem;
+
+}
+
+.target-image {
+
+max-width: 200px;
+height: auto;
+display: block;
+margin: 1rem 0;
+
+}

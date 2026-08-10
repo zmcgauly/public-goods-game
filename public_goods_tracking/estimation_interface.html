@@ -1,0 +1,28 @@
+
+{{ for target in targets_info }}
+  <div class="estimation-section">
+    <h3>{{ target.label }}</h3>
+    <img src="{{ static target.image }}" alt="{{ target.label }}" class="target-image">
+    
+    <p>What amount do you think {{ target.label }} has contributed to the group account?</p>
+    <p>Distribute your {{ C.BALLS_PER_ESTIMATE }} balls across the contribution amounts:</p>
+    
+    <div class="balls-display">
+      <p>Balls remaining: <span id="balls-remaining-{{ target.id }}">{{ C.BALLS_PER_ESTIMATE }}</span></p>
+    </div>
+    
+    <div class="contribution-slots" data-target-id="{{ target.id }}">
+      {{ for amount in contribution_options }}
+        <div class="slot">
+          <div class="slot-header">{{ amount }}</div>
+          <div class="ball-stack" id="slot-{{ target.id }}-{{ amount }}" aria-label="0 balls"></div>
+          <div class="ball-count" id="slot-count-{{ target.id }}-{{ amount }}">0</div>
+          <button type="button" class="btn-add-ball" data-target="{{ target.id }}" data-amount="{{ amount }}">+</button>
+          <button type="button" class="btn-remove-ball" data-target="{{ target.id }}" data-amount="{{ amount }}">-</button>
+        </div>
+      {{ endfor }}
+    </div>
+    
+    <input type="hidden" name="estimate_{{ target.id }}" id="estimate-data-{{ target.id }}">
+  </div>
+{{ endfor }}

@@ -1,0 +1,25 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Contribution Decision{{ endblock }}
+
+{{ block content }}
+<p>Period {{ current_period }}, Round {{ player.round_number }}.</p>
+<p>You are Player <b>{{ player.id_in_subsession }}</b>. You have {{ C.ENDOWMENT }} balls.</p>
+
+<h3>Current Group</h3>
+<div class="players-grid">
+  {{ for group_player in group_players }}
+    <div class="player-card">
+      <img src="{{ static group_player.image }}" alt="Player {{ group_player.player_number }}">
+      <p><b>Player {{ group_player.player_number }}</b></p>
+      {{ if group_player.is_self }}
+        <p>(You)</p>
+      {{ endif }}
+    </div>
+  {{ endfor }}
+</div>
+
+<p>{{ formfield 'contribution' }}</p>
+<p><i>Contributed balls are multiplied by {{ C.MULTIPLIER }} and split equally across {{ C.PLAYERS_PER_GROUP }} players.</i></p>
+
+{{ next_button }}
+{{ endblock }}

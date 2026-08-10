@@ -1,0 +1,16 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Estimate Other Players' Contributions{{ endblock }}
+
+{{ block content }}
+
+
+<p>You have {{ C.BALLS_PER_ESTIMATE }} balls to distribute. Each ball placed in the correct slot earns you {{ C.REWARD_PER_BALL }} ball(s).</p>
+
+{{ include_sibling 'estimation_interface.html' }}
+
+{{ next_button }}
+
+<script>{{ include_sibling 'estimation.js' }}</script>
+
+
+{{ endblock }}

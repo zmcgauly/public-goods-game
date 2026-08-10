@@ -1,0 +1,14 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Identification Question{{ endblock }}
+
+{{ block content }}
+<p>Period {{ current_period }}, Round {{ player.round_number }}.</p>
+
+<div class="player-card">
+  <img src="{{ static target_image }}" alt="{{ target_label }}" style="max-width: 260px;">
+  <p><b>{{ target_label }}</b></p>
+</div>
+
+{{ formfield question_field_name label=question_prompt }}
+{{ next_button }}
+{{ endblock }}

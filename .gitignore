@@ -1,0 +1,11 @@
+__pycache__/
+*.py[cod]
+*.sqlite3
+.idea/
+.otreezip/
+_temp/
+venv/
+.venv/
+.env
+*.log
+.Rhistory

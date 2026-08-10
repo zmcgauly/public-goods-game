@@ -1,0 +1,43 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Profile Information{{ endblock }}
+
+{{ block content }}
+
+<h3>Other Players' Demographics</h3>
+<p>Please identify the following information about each player you were grouped with during the game.</p>
+
+{{ for target in targets_info }}
+  <div class="profile-section">
+    <h4>{{ target.label }}</h4>
+    <img src="{{ static target.image }}" alt="{{ target.label }}" class="profile-image">
+    <p><b>Guess what {{ target.label }} identifies as.</b></p>
+    
+    <div class="guess-fields">
+      <label>Age:</label>
+      <input type="number" class="form-control guess-age" data-target="{{ target.id }}" min="{{ C.MIN_AGE }}" max="{{ C.MAX_AGE }}">
+
+      <label>Hispanic or Latino:</label>
+      <input type="text" class="form-control guess-ethnicity" data-target="{{ target.id }}">
+
+      <label>Race:</label>
+      <input type="text" class="form-control guess-race" data-target="{{ target.id }}">
+      
+      <label>Gender:</label>
+      <input type="text" class="form-control guess-gender" data-target="{{ target.id }}">
+      
+      <label>Sexuality:</label>
+      <input type="text" class="form-control guess-sexuality" data-target="{{ target.id }}">
+      
+    </div>
+  </div>
+{{ endfor }}
+
+<div class="hidden-field">
+  {{ formfield 'profile_guesses_json' }}
+</div>
+
+{{ next_button }}
+
+<script>{{ include_sibling 'profile.js' }}</script>
+
+{{ endblock }}

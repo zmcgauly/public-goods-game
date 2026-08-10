@@ -1,0 +1,14 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Self Identification{{ endblock }}
+
+{{ block content }}
+<p>Please answer the following questions about yourself before the game begins.</p>
+
+{{ formfield 'age' }}
+{{ formfield 'ethnicity' }}
+{{ formfield 'race' }}
+{{ formfield 'gender' }}
+{{ formfield 'sexuality' }}
+
+{{ next_button }}
+{{ endblock }}

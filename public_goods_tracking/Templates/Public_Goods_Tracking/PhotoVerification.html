@@ -1,0 +1,14 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Photo Verification{{ endblock }}
+
+{{ block content }}
+<p>Please confirm your assigned picture and enter the player number shown.</p>
+
+<div class="player-card">
+  <img src="{{ static player_image }}" alt="Player {{ player_number }}" style="max-width: 260px;">
+</div>
+
+{{ formfield 'photo_confirmation' }}
+{{ formfield 'verified_player_number' }}
+{{ next_button }}
+{{ endblock }}

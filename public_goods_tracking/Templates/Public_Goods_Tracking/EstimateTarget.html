@@ -1,0 +1,86 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Estimate Contribution{{ endblock }}
+
+{{ block content }}
+<p>Period {{ current_period }}, Round {{ player.round_number }}.</p>
+<p>What amount do you think <b>Player {{ target_number }}</b> has contributed to the group account?</p>
+<p>You must place all {{ balls_per_estimate }} balls before continuing.</p>
+
+<div class="player-card">
+  <img src="{{ static target_image }}" alt="{{ target_label }}" style="max-width: 260px;">
+</div>
+
+<p>Balls remaining: <span id="balls-remaining">{{ balls_per_estimate }}</span></p>
+
+<div class="contribution-slots">
+  {{ for amount in contribution_options }}
+    <div class="slot">
+      <div class="slot-header">{{ amount }}</div>
+      <div class="ball-stack" id="slot-{{ amount }}" aria-label="0 balls"></div>
+      <div class="ball-count" id="slot-count-{{ amount }}">0</div>
+      <button type="button" class="btn-add-ball" data-amount="{{ amount }}">+</button>
+      <button type="button" class="btn-remove-ball" data-amount="{{ amount }}">-</button>
+    </div>
+  {{ endfor }}
+</div>
+
+<input type="hidden" name="{{ estimate_field_name }}" id="estimate-data">
+
+{{ next_button }}
+
+<script>
+  const maxBalls = {{ balls_per_estimate }};
+  const distribution = {};
+  {{ for amount in contribution_options }}
+    distribution['{{ amount }}'] = 0;
+  {{ endfor }}
+
+  function totalUsed() {
+    return Object.values(distribution).reduce((sum, value) => sum + value, 0);
+  }
+
+  function syncEstimate() {
+    document.getElementById('estimate-data').value = JSON.stringify(distribution);
+    document.getElementById('balls-remaining').textContent = maxBalls - totalUsed();
+  }
+
+  function updateSlot(amount) {
+    const count = distribution[String(amount)];
+    const stackEl = document.getElementById(`slot-${amount}`);
+    const countEl = document.getElementById(`slot-count-${amount}`);
+    stackEl.innerHTML = '';
+    stackEl.setAttribute('aria-label', `${count} balls`);
+    countEl.textContent = count;
+    for (let i = 0; i < count; i++) {
+      const ballEl = document.createElement('div');
+      ballEl.className = 'stack-ball';
+      stackEl.appendChild(ballEl);
+    }
+    syncEstimate();
+  }
+
+  document.querySelectorAll('.btn-add-ball').forEach((button) => {
+    button.addEventListener('click', () => {
+      const amount = button.dataset.amount;
+      if (totalUsed() >= maxBalls) {
+        return;
+      }
+      distribution[amount] += 1;
+      updateSlot(amount);
+    });
+  });
+
+  document.querySelectorAll('.btn-remove-ball').forEach((button) => {
+    button.addEventListener('click', () => {
+      const amount = button.dataset.amount;
+      if (distribution[amount] <= 0) {
+        return;
+      }
+      distribution[amount] -= 1;
+      updateSlot(amount);
+    });
+  });
+
+  syncEstimate();
+</script>
+{{ endblock }}

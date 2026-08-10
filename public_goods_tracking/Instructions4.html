@@ -1,0 +1,27 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Estimating Other Players{{ endblock }}
+
+{{ block content }}
+{{ include_sibling 'InstructionsButton.html' }}
+<div class="notice-panel">
+  <p>
+    After each contribution decision, you will estimate what each of the other
+    players in your group contributed.
+  </p>
+  <p>
+    For each player, you will distribute {{ C.BALLS_PER_ESTIMATE }} balls across
+    possible contribution amounts from 0 to {{ C.ENDOWMENT }}.
+  </p>
+  <p>
+    Placing more balls on an amount means you think that amount is more likely.
+    You must place all {{ C.BALLS_PER_ESTIMATE }} balls before continuing.
+  </p>
+  <p>
+    Each ball placed on the amount that the other player actually contributed
+    earns {{ C.REWARD_PER_BALL }} additional ball.
+  </p>
+</div>
+
+{{ include_sibling 'TestingSkipButton.html' }}
+{{ next_button }}
+{{ endblock }}

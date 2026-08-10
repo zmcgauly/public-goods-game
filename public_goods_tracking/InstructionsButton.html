@@ -1,0 +1,77 @@
+<button class="instructions-button" type="button" data-instructions-open>
+  Instructions
+</button>
+
+<div class="instructions-overlay" data-instructions-overlay hidden>
+  <div class="instructions-modal" role="dialog" aria-modal="true" aria-labelledby="instructions-summary-title">
+    <div class="instructions-modal-header">
+      <h3 id="instructions-summary-title">Instructions Summary</h3>
+      <button class="instructions-close" type="button" aria-label="Close instructions" data-instructions-close>
+        x
+      </button>
+    </div>
+    <div class="instructions-modal-body">
+      <p>
+        You will be placed in groups of {{ C.PLAYERS_PER_GROUP }} participants.
+        The experiment has {{ C.NUM_PERIODS }} periods, with two rounds in each period.
+      </p>
+      <p>
+        In each round, you receive {{ C.ENDOWMENT }} balls and choose how many
+        to contribute to the public good. You keep any balls you do not contribute.
+      </p>
+      <p>
+        The group contribution is multiplied by {{ C.MULTIPLIER }} and split
+        equally among the {{ C.PLAYERS_PER_GROUP }} group members.
+      </p>
+      <p>
+        Your round payoff is:
+        {{ C.ENDOWMENT }} - your contribution + your share of the multiplied group contribution.
+      </p>
+      <p>
+        After contributing, you estimate the contributions of the other group
+        members by distributing {{ C.BALLS_PER_ESTIMATE }} balls across the
+        possible contribution amounts.
+      </p>
+      <p>
+        At the end, one period is randomly selected for the guessing payoff.
+        You also answer self-identification questions and guess information
+        about the players you encountered.
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  (function () {
+    var openButton = document.querySelector('[data-instructions-open]');
+    var overlay = document.querySelector('[data-instructions-overlay]');
+    var closeButton = document.querySelector('[data-instructions-close]');
+
+    if (!openButton || !overlay || !closeButton) {
+      return;
+    }
+
+    function openInstructions() {
+      overlay.hidden = false;
+      closeButton.focus();
+    }
+
+    function closeInstructions() {
+      overlay.hidden = true;
+      openButton.focus();
+    }
+
+    openButton.addEventListener('click', openInstructions);
+    closeButton.addEventListener('click', closeInstructions);
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay) {
+        closeInstructions();
+      }
+    });
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape' && !overlay.hidden) {
+        closeInstructions();
+      }
+    });
+  })();
+</script>

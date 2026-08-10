@@ -70,9 +70,13 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
     skip_instructions = models.StringField(blank=True, initial='')
+    instruction_quiz_left = models.IntegerField(blank=True)
+    instruction_quiz_right = models.IntegerField(blank=True)
+    instruction_quiz_operator = models.StringField(blank=True)
+    instruction_quiz_correct_answer = models.IntegerField(blank=True)
 
     instruction_quiz_answer = models.IntegerField(
-        label='What is 2 + 3?',
+        label='Your answer',
         blank=True,
     )
     photo_confirmation = models.StringField(
@@ -364,6 +368,21 @@ def selected_period_guessing_payoff(player: Player):
     return sum(player.in_round(round_number).estimation_payoff for round_number in selected_rounds)
 
 
+def set_instruction_quiz_problem(player: Player):
+    if player.field_maybe_none('instruction_quiz_correct_answer') is not None:
+        return
+
+    left = random.randint(10, 99)
+    right = random.randint(1, 9)
+    operator = random.choice(['+', '-'])
+    answer = left + right if operator == '+' else left - right
+
+    player.instruction_quiz_left = left
+    player.instruction_quiz_right = right
+    player.instruction_quiz_operator = operator
+    player.instruction_quiz_correct_answer = answer
+
+
 def is_real_experiment_session(session):
     return bool(session.config.get('is_real_experiment', True))
 
@@ -405,6 +424,43 @@ class SharedInstructionsNotice(Page):
         instruction_page_before_next(player, timeout_happened)
 
 
+class BaseInstructionsPage(Page):
+    form_model = 'player'
+    form_fields = ['skip_instructions']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return instruction_page_is_displayed(player)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return instruction_page_vars(player)
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        instruction_page_before_next(player, timeout_happened)
+
+
+class Instructions(BaseInstructionsPage):
+    pass
+
+
+class Instructions2(BaseInstructionsPage):
+    pass
+
+
+class Instructions3(BaseInstructionsPage):
+    pass
+
+
+class Instructions4(BaseInstructionsPage):
+    pass
+
+
+class Instructions5(BaseInstructionsPage):
+    pass
+
+
 class InstructionQuiz(Page):
     form_model = 'player'
     form_fields = ['instruction_quiz_answer']
@@ -414,9 +470,19 @@ class InstructionQuiz(Page):
         return player.round_number == 1 and not instructions_skipped(player)
 
     @staticmethod
+    def vars_for_template(player: Player):
+        set_instruction_quiz_problem(player)
+        return dict(
+            quiz_left=player.instruction_quiz_left,
+            quiz_right=player.instruction_quiz_right,
+            quiz_operator=player.instruction_quiz_operator,
+        )
+
+    @staticmethod
     def error_message(player: Player, values):
-        if values['instruction_quiz_answer'] != 5:
-            return 'Please answer the quiz question correctly before continuing.'
+        set_instruction_quiz_problem(player)
+        if values['instruction_quiz_answer'] != player.instruction_quiz_correct_answer:
+            return 'Please answer the arithmetic question correctly before continuing.'
 
 
 class PhotoVerification(Page):
@@ -843,6 +909,11 @@ class Results(Page):
 
 page_sequence = [
     SharedInstructionsNotice,
+    Instructions,
+    Instructions2,
+    Instructions3,
+    Instructions4,
+    Instructions5,
     InstructionQuiz,
     PhotoVerification,
     Contribution,

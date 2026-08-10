@@ -2,14 +2,14 @@
 {{ block title }}Instruction Quiz{{ endblock }}
 
 {{ block content }}
-<p>Answer the quiz question correctly before the game starts.</p>
-
-<h4>Leaving the Experiment</h4>
-<p>
-    You are free to leave at any time, regardless of the completion status of the experiment.
-    Should you choose to leave before the experiment is complete, you will still be given your
-    show-up fee but will sacrifice any payoff from your decisions.
-</p>
+<div class="notice-panel">
+  <p>
+    Answer the arithmetic question correctly before the game starts.
+  </p>
+  <p class="quiz-problem">
+    {{ quiz_left }} {{ quiz_operator }} {{ quiz_right }} =
+  </p>
+</div>
 
 {{ formfield 'instruction_quiz_answer' }}
 {{ next_button }}

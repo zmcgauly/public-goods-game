@@ -1,0 +1,27 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Payment and Final Questions{{ endblock }}
+
+{{ block content }}
+{{ include_sibling 'InstructionsButton.html' }}
+<div class="notice-panel">
+  <p>
+    Your public-goods earnings accumulate across rounds.
+  </p>
+  <p>
+    At the end of the experiment, one period is randomly selected for the
+    guessing payoff. The selected period includes both rounds from that period.
+  </p>
+  <p>
+    After all decision rounds are complete, you will answer self-identification
+    questions. You will also make guesses about the players you encountered
+    during the experiment.
+  </p>
+  <p>
+    Before the decision rounds begin, you will answer a short arithmetic
+    question on a separate quiz page. You must answer it correctly to continue.
+  </p>
+</div>
+
+{{ include_sibling 'TestingSkipButton.html' }}
+{{ next_button }}
+{{ endblock }}

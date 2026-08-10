@@ -2,6 +2,7 @@
 {{ block title }}Instructions: Main Stage{{ endblock }}
 
 {{ block content }}
+{{ include_sibling 'MathJax.html' }}
 <div class="notice-panel">
 <p>In the main stage, you will decide how many of your 10 balls you want to contribute to a shared group account.</p>
 
@@ -17,15 +18,28 @@
 
 <p>The main-stage group account payoff value is calculated as:</p>
 
-<p class="payoff-formula">\[
-\pi = (\text{your endowment} - \text{your contribution to the group account}) + 1.6\left(\frac{\text{all contributions}}{3}\right)
-\]</p>
+<div class="payoff-formula">
+\[
+\begin{aligned}
+\text{main-stage group account payoff value}
+&= (\text{your endowment} - \text{your contribution to the group account}) \\
+&\quad + 1.6 \times \left(\frac{\text{all group contributions}}{3}\right)
+\end{aligned}
+\]
+</div>
 
 <p>Using the example below, suppose the three players contribute 2, 5, and 8 balls. All contributions together equal 15 balls. If you contributed 2 balls, your main-stage group account payoff value would be:</p>
 
-<p class="payoff-formula">\[
-\pi = (10 - 2) + 1.6\left(\frac{15}{3}\right) = 8 + 8 = 16
-\]</p>
+<div class="payoff-formula">
+\[
+\begin{aligned}
+\text{main-stage group account payoff value}
+&= (10 - 2) + 1.6 \times \left(\frac{15}{3}\right) \\
+&= 8 + 8 \\
+&= 16
+\end{aligned}
+\]
+</div>
 
 <p>So, in this example, the calculated main-stage group account payoff value for the player who contributed 2 balls would be 16.</p>
 

@@ -132,9 +132,20 @@ overflow-x: auto;
 
 .payoff-formula {
 
-font-size: 1.05rem;
-margin: 1rem 0;
+font-size: 1rem;
+margin: 1rem 0 1.25rem;
 overflow-x: auto;
+padding: 0.75rem;
+border: 1px solid #d7e0ea;
+border-radius: 4px;
+background: #fff;
+
+}
+
+.payoff-formula mjx-container[jax="CHTML"][display="true"] {
+
+margin: 0;
+text-align: left;
 
 }
 

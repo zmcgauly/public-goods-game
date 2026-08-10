@@ -5,19 +5,15 @@
 {{ include_sibling 'InstructionsButton.html' }}
 <div class="notice-panel">
   <p>
-    In every round, each participant receives {{ C.ENDOWMENT }} balls.
-  </p>
-  <p>
-    You choose how many balls, from 0 to {{ C.ENDOWMENT }}, to contribute to the
+    In every round, each participant receives {{ C.ENDOWMENT }} balls. You
+    choose how many balls, from 0 to {{ C.ENDOWMENT }}, to contribute to the
     public good. You keep any balls you do not contribute.
   </p>
   <p>
     After all members of your group make their decisions, the computer adds the
-    group contributions together.
-  </p>
-  <p>
-    The total contribution is multiplied by {{ C.MULTIPLIER }} and then split
-    equally among all {{ C.PLAYERS_PER_GROUP }} group members.
+    group contributions together. The total contribution is multiplied by
+    {{ C.MULTIPLIER }} and then split equally among all
+    {{ C.PLAYERS_PER_GROUP }} group members.
   </p>
   <p>
     Your round payoff is calculated as:

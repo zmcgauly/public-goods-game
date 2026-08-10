@@ -98,6 +98,25 @@ margin: 1rem 0;
 
 }
 
+.notice-panel p,
+.notice-panel li {
+
+line-height: 1.5;
+
+}
+
+.notice-panel p {
+
+margin: 0 0 0.85rem;
+
+}
+
+.notice-panel ul {
+
+margin-top: 0;
+
+}
+
 .notice-panel p:last-child {
 
 margin-bottom: 0;

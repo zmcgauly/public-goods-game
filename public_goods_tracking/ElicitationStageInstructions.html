@@ -1,0 +1,31 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instructions: Elicitation Stage{{ endblock }}
+
+{{ block content }}
+<div class="notice-panel">
+<p>In the elicitation stage, you will be asked to make guesses about the other players in your group.</p>
+
+<p>After the main stage of each round, you will see the other two players who were in your group for that round. You will then be asked to estimate how much each of those players contributed to the shared account in the main stage. Your task is to make your best guess about each player's contribution.</p>
+
+<p>Each player has 10 balls available in the main stage, so each player's contribution must be a whole number from 0 to 10. In the elicitation stage, you will place balls on the contribution amounts you think are most likely. For example, if you think a player most likely contributed 5 balls, you can place more balls on 5. If you are unsure, you can spread your balls across several possible contribution amounts. If the selected round is chosen for payment, each ball you placed on the correct contribution amount for another player will equal one dollar. The group account calculation from the main stage will not be paid.</p>
+
+<p>You will complete the elicitation stage after each main stage decision. This means that in each round, you first decide how much to contribute to the shared account, and then you make guesses about the other players' contributions. The experiment consists of ten rounds. Your group will stay the same for two rounds at a time. After every two rounds, groups will be reshuffled, and you may be assigned new groupmates. This means that over the course of the experiment, you may be paired with different players in different rounds. Because your groupmates may change after two rounds, the players you are asked about in the elicitation stage may also change. You should base your guesses on the players shown to you in the current round.</p>
+
+<p>Once you finish entering your guesses for the elicitation stage and click Next, your responses for that stage will be submitted. After all players complete the elicitation stage, the experiment will continue to the next round or, if the current set of rounds is complete, to the next part of the experiment.</p>
+
+<p class="instruction-caption">You may distribute your guesses any way you like, such as below.</p>
+<div class="instruction-visuals">
+    <img class="instruction-visual" src="{{ static 'instruction_images/elicitation_stage_visual_1.png' }}" alt="Elicitation stage guess distribution example 1">
+    <img class="instruction-visual" src="{{ static 'instruction_images/elicitation_stage_visual_2.png' }}" alt="Elicitation stage guess distribution example 2">
+    <img class="instruction-visual" src="{{ static 'instruction_images/elicitation_stage_visual_3.png' }}" alt="Elicitation stage guess distribution example 3">
+</div>
+
+<p class="instruction-caption">A full elicitation screen may look like this.</p>
+<div class="instruction-visuals">
+    <img class="instruction-visual elicitation-screen-visual" src="{{ static 'instruction_images/final_instructions_visual.png' }}" alt="Full elicitation stage screen example">
+</div>
+</div>
+
+{{ include_sibling 'TestingSkipButton.html' }}
+{{ next_button }}
+{{ endblock }}

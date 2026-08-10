@@ -130,6 +130,54 @@ overflow-x: auto;
 
 }
 
+.payoff-formula {
+
+font-size: 1.05rem;
+margin: 1rem 0;
+overflow-x: auto;
+
+}
+
+.instruction-caption {
+
+font-weight: bold;
+margin: 1.5rem 0 0.5rem;
+
+}
+
+.instruction-visuals {
+
+display: flex;
+flex-direction: column;
+gap: 1rem;
+margin: 1rem 0;
+
+}
+
+.instruction-visual {
+
+width: min(100%, 300px);
+aspect-ratio: 1366 / 854;
+height: auto;
+border: 1px solid #d7e0ea;
+border-radius: 4px;
+background: #fff;
+object-fit: contain;
+
+}
+
+.main-stage-visual {
+
+width: min(100%, 520px);
+
+}
+
+.elicitation-screen-visual {
+
+width: min(100%, 860px);
+
+}
+
 .quiz-problem {
 
 font-size: 1.4rem;

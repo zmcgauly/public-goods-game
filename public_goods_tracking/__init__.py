@@ -397,7 +397,10 @@ def instruction_page_is_displayed(player: Player):
 
 
 def instruction_page_vars(player: Player):
-    return dict(show_testing_skip=not is_real_experiment_session(player.session))
+    return dict(
+        show_testing_skip=not is_real_experiment_session(player.session),
+        show_up_fee='$10',
+    )
 
 
 def instruction_page_before_next(player: Player, timeout_happened):
@@ -442,23 +445,27 @@ class BaseInstructionsPage(Page):
         instruction_page_before_next(player, timeout_happened)
 
 
-class Instructions(BaseInstructionsPage):
+class DeviceInstructions(BaseInstructionsPage):
     pass
 
 
-class Instructions2(BaseInstructionsPage):
+class EarningsInstructions(BaseInstructionsPage):
     pass
 
 
-class Instructions3(BaseInstructionsPage):
+class RoundsInstructions(BaseInstructionsPage):
     pass
 
 
-class Instructions4(BaseInstructionsPage):
+class MainStageInstructions(BaseInstructionsPage):
     pass
 
 
-class Instructions5(BaseInstructionsPage):
+class ElicitationStageInstructions(BaseInstructionsPage):
+    pass
+
+
+class FinalInstructions(BaseInstructionsPage):
     pass
 
 
@@ -910,11 +917,12 @@ class Results(Page):
 
 page_sequence = [
     SharedInstructionsNotice,
-    Instructions,
-    Instructions2,
-    Instructions3,
-    Instructions4,
-    Instructions5,
+    DeviceInstructions,
+    EarningsInstructions,
+    RoundsInstructions,
+    MainStageInstructions,
+    ElicitationStageInstructions,
+    FinalInstructions,
     InstructionQuiz,
     PhotoVerification,
     Contribution,

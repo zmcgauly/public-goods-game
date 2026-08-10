@@ -1,0 +1,10 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instructions{{ endblock }}
+
+{{ block content }}
+<div class="notice-panel">
+<p>Please put all electronic devices away for the duration of the experiment. Please remain quiet while the experiment is in session. If you have a question, raise your hand and an experimenter lead will meet with you directly.</p>
+</div>
+{{ include_sibling 'TestingSkipButton.html' }}
+{{ next_button }}
+{{ endblock }}

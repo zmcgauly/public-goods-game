@@ -1,0 +1,11 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Instructions{{ endblock }}
+
+{{ block content }}
+<div class="notice-panel">
+<p>This is an experiment on economic decision making. The decisions you and others make determine the final amount of money you and other participants will earn. By participating, you have earned a show-up fee of {{ show_up_fee }}. This amount is separate from your potential earnings throughout the experiment. Regardless of your decisions throughout the experiment, you will earn the show-up fee.</p>
+<p>You are free to leave at any time regardless of the completion status of the experiment. Should you choose to leave before the experiment is complete, you will still be given your show-up fee but will forfeit any payoff from your decisions.</p>
+</div>
+{{ include_sibling 'TestingSkipButton.html' }}
+{{ next_button }}
+{{ endblock }}

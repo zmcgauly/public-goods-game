@@ -88,6 +88,22 @@ font-weight: bold;
 display: none;
 }
 
+.notice-panel {
+
+border: 1px solid #cbd5e1;
+border-radius: 4px;
+background: #f8fafc;
+padding: 1rem;
+margin: 1rem 0;
+
+}
+
+.testing-skip-button {
+
+margin-right: 0.5rem;
+
+}
+
 .player-card {
 
 border: 1px solid #ddd;

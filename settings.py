@@ -1,6 +1,20 @@
 from os import environ
-SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1.0, participation_fee=0.0)
-SESSION_CONFIGS = [dict(name='public_goods_tracking', num_demo_participants=15, app_sequence=['public_goods_tracking'])]
+
+SESSION_CONFIG_DEFAULTS = dict(
+    real_world_currency_per_point=1.0,
+    participation_fee=0.0,
+    is_real_experiment=True,
+)
+
+SESSION_CONFIGS = [
+    dict(
+        name='public_goods_tracking',
+        display_name='Public Goods Game',
+        num_demo_participants=15,
+        app_sequence=['public_goods_tracking'],
+        is_real_experiment=True,
+    )
+]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
 USE_POINTS = True

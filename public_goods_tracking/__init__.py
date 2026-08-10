@@ -69,6 +69,8 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
+    skip_instructions = models.StringField(blank=True, initial='')
+
     instruction_quiz_answer = models.IntegerField(
         label='What is 2 + 3?',
         blank=True,
@@ -362,13 +364,54 @@ def selected_period_guessing_payoff(player: Player):
     return sum(player.in_round(round_number).estimation_payoff for round_number in selected_rounds)
 
 
+def is_real_experiment_session(session):
+    return bool(session.config.get('is_real_experiment', True))
+
+
+def instructions_skipped(player: Player):
+    return bool(player.participant.vars.get('skip_instructions_and_quiz', False))
+
+
+def instruction_page_is_displayed(player: Player):
+    return player.round_number == 1 and not instructions_skipped(player)
+
+
+def instruction_page_vars(player: Player):
+    return dict(show_testing_skip=not is_real_experiment_session(player.session))
+
+
+def instruction_page_before_next(player: Player, timeout_happened):
+    if (
+        not is_real_experiment_session(player.session)
+        and player.field_maybe_none('skip_instructions') == '1'
+    ):
+        player.participant.vars['skip_instructions_and_quiz'] = True
+
+
+class SharedInstructionsNotice(Page):
+    form_model = 'player'
+    form_fields = ['skip_instructions']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return instruction_page_is_displayed(player)
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return instruction_page_vars(player)
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        instruction_page_before_next(player, timeout_happened)
+
+
 class InstructionQuiz(Page):
     form_model = 'player'
     form_fields = ['instruction_quiz_answer']
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1
+        return player.round_number == 1 and not instructions_skipped(player)
 
     @staticmethod
     def error_message(player: Player, values):
@@ -382,7 +425,7 @@ class PhotoVerification(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.round_number == 1
+        return player.round_number == 1 and not instructions_skipped(player)
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -799,6 +842,7 @@ class Results(Page):
 
 
 page_sequence = [
+    SharedInstructionsNotice,
     InstructionQuiz,
     PhotoVerification,
     Contribution,

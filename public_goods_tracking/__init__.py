@@ -60,6 +60,7 @@ class Subsession(BaseSubsession):
         for player in subsession.get_players():
             if subsession.round_number == 1:
                 player.participant.selected_period_guessing_added = False
+                set_instruction_quiz_problem(player)
             assign_target_slots(player)
 
 

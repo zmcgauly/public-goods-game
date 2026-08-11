@@ -266,6 +266,14 @@ margin-right: 0.45rem;
 
 }
 
+.experiment-complete-message {
+
+color: #b91c1c;
+font-weight: bold;
+margin-top: 2rem;
+
+}
+
 .testing-skip-button {
 
 position: fixed;

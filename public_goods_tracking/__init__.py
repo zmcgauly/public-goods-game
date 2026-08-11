@@ -412,19 +412,97 @@ def selected_period_guessing_payoff(player: Player):
     return sum(player.in_round(round_number).estimation_payoff for round_number in selected_rounds)
 
 
+INSTRUCTION_QUIZ_QUESTIONS = [
+    dict(
+        question='What is your guaranteed show-up fee?',
+        choices=[
+            dict(text='$10', correct=True),
+            dict(text='$0', correct=False),
+            dict(text='$5', correct=False),
+            dict(text='Only whatever I earn during the game', correct=False),
+        ],
+    ),
+    dict(
+        question='If you leave before the experiment is complete, what happens?',
+        choices=[
+            dict(text='I still receive the $10 show-up fee but forfeit payoff from my decisions.', correct=True),
+            dict(text='I receive nothing.', correct=False),
+            dict(text='I receive all possible earnings.', correct=False),
+            dict(text='I must stay until the end.', correct=False),
+        ],
+    ),
+    dict(
+        question='In the main stage, who determines how much each player contributes?',
+        choices=[
+            dict(text='Each player chooses how much of their own endowment to contribute.', correct=True),
+            dict(text='The computer chooses for everyone.', correct=False),
+            dict(text='Only one group member chooses.', correct=False),
+            dict(text='The experimenter chooses.', correct=False),
+        ],
+    ),
+    dict(
+        question='Which sentence correctly describes the main-stage group account payoff value?',
+        choices=[
+            dict(
+                text='It is your endowment minus your contribution, plus your equal share of 1.6 times all group contributions.',
+                correct=True,
+            ),
+            dict(
+                text='It is only the number of balls you personally contributed to the shared account.',
+                correct=False,
+            ),
+            dict(
+                text='It is the full multiplied group total paid entirely to the player who contributed the most.',
+                correct=False,
+            ),
+            dict(
+                text='It is always 10, regardless of what anyone in the group contributes.',
+                correct=False,
+            ),
+        ],
+    ),
+]
+
+
 def set_instruction_quiz_problem(player: Player):
-    if player.field_maybe_none('instruction_quiz_correct_answer') is not None:
+    stored_quiz = player.participant.vars.get('instruction_quiz_questions')
+    if (
+        player.field_maybe_none('instruction_quiz_correct_answer') is not None
+        and stored_quiz
+    ):
         return
 
-    left = random.randint(10, 99)
-    right = random.randint(1, 9)
-    operator = random.choice(['+', '-'])
-    answer = left + right if operator == '+' else left - right
+    is_real_session = is_real_experiment_session(player.session)
+    question_indexes = list(range(len(INSTRUCTION_QUIZ_QUESTIONS)))
+    if is_real_session:
+        random.shuffle(question_indexes)
 
-    player.instruction_quiz_left = left
-    player.instruction_quiz_right = right
-    player.instruction_quiz_operator = operator
-    player.instruction_quiz_correct_answer = answer
+    prepared_questions = []
+    correct_positions = []
+    for display_index, question_index in enumerate(question_indexes, start=1):
+        source_question = INSTRUCTION_QUIZ_QUESTIONS[question_index]
+        choices = [
+            dict(position=choice_index, text=choice['text'], correct=choice['correct'])
+            for choice_index, choice in enumerate(source_question['choices'], start=1)
+        ]
+        if is_real_session:
+            random.shuffle(choices)
+
+        for choice_position, choice in enumerate(choices, start=1):
+            choice['position'] = choice_position
+            if choice['correct']:
+                correct_positions.append(str(choice_position))
+
+        prepared_questions.append(
+            dict(
+                position=display_index,
+                question=source_question['question'],
+                choices=choices,
+            )
+        )
+
+    player.participant.vars['instruction_quiz_questions'] = prepared_questions
+    player.instruction_quiz_correct_answer = int(''.join(correct_positions))
 
 
 def is_real_experiment_session(session):
@@ -523,17 +601,19 @@ class InstructionQuiz(Page):
     @staticmethod
     def vars_for_template(player: Player):
         set_instruction_quiz_problem(player)
+        quiz_questions = player.participant.vars['instruction_quiz_questions']
         return dict(
-            quiz_left=player.instruction_quiz_left,
-            quiz_right=player.instruction_quiz_right,
-            quiz_operator=player.instruction_quiz_operator,
+            quiz_questions=quiz_questions,
+            quiz_question_count=len(quiz_questions),
         )
 
     @staticmethod
     def error_message(player: Player, values):
         set_instruction_quiz_problem(player)
+        if values.get('instruction_quiz_answer') in [None, '']:
+            return 'Please answer every quiz question before continuing.'
         if values['instruction_quiz_answer'] != player.instruction_quiz_correct_answer:
-            return 'Please answer the arithmetic question correctly before continuing.'
+            return 'One or more quiz answers is incorrect. Please review the instructions and try again.'
 
 
 class PhotoVerification(Page):

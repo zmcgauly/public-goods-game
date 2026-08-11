@@ -220,6 +220,52 @@ margin-top: 1rem;
 
 }
 
+.quiz-questions {
+
+display: grid;
+gap: 1rem;
+margin: 1rem 0;
+
+}
+
+.quiz-question {
+
+border: 1px solid #d7e0ea;
+border-radius: 4px;
+padding: 1rem;
+
+}
+
+.quiz-question legend {
+
+float: none;
+width: auto;
+margin: 0 0 0.75rem;
+font-size: 1rem;
+font-weight: bold;
+
+}
+
+.quiz-choice {
+
+display: block;
+margin: 0 0 0.55rem;
+line-height: 1.4;
+
+}
+
+.quiz-choice:last-child {
+
+margin-bottom: 0;
+
+}
+
+.quiz-choice input {
+
+margin-right: 0.45rem;
+
+}
+
 .testing-skip-button {
 
 position: fixed;

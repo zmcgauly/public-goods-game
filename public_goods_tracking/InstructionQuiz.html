@@ -4,13 +4,51 @@
 {{ block content }}
 <div class="notice-panel">
   <p>
-    Answer the arithmetic question correctly before the game starts.
-  </p>
-  <p class="quiz-problem">
-    {{ quiz_left }} {{ quiz_operator }} {{ quiz_right }} =
+    Answer each question correctly before the game starts.
   </p>
 </div>
 
-{{ formfield 'instruction_quiz_answer' }}
+<div class="quiz-questions">
+  {{ for quiz_question in quiz_questions }}
+    <fieldset class="quiz-question">
+      <legend>{{ quiz_question.position }}. {{ quiz_question.question }}</legend>
+      {{ for choice in quiz_question.choices }}
+        <label class="quiz-choice">
+          <input
+            type="radio"
+            name="quiz_question_{{ quiz_question.position }}"
+            value="{{ choice.position }}"
+            required
+          >
+          {{ choice.text }}
+        </label>
+      {{ endfor }}
+    </fieldset>
+  {{ endfor }}
+</div>
+
+<div class="hidden-field">
+  {{ formfield 'instruction_quiz_answer' }}
+</div>
+
 {{ next_button }}
+
+<script>
+  (function () {
+    const form = document.querySelector('#id_instruction_quiz_answer').closest('form');
+    const hiddenInput = document.querySelector('#id_instruction_quiz_answer');
+    const questionCount = {{ quiz_question_count }};
+
+    form.addEventListener('submit', function () {
+      const encodedAnswers = [];
+      for (let questionIndex = 1; questionIndex <= questionCount; questionIndex += 1) {
+        const selected = document.querySelector(`input[name="quiz_question_${questionIndex}"]:checked`);
+        if (selected) {
+          encodedAnswers.push(selected.value);
+        }
+      }
+      hiddenInput.value = encodedAnswers.join('');
+    });
+  })();
+</script>
 {{ endblock }}

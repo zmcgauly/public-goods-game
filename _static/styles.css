@@ -400,6 +400,70 @@ border-radius: 4px;
 
 }
 
+.single-profile-section {
+
+display: grid;
+grid-template-columns: minmax(140px, 220px) minmax(0, 1fr);
+gap: 1.5rem;
+align-items: start;
+
+}
+
+.single-profile-section .profile-image {
+
+width: 100%;
+max-width: 220px;
+margin: 0;
+border-radius: 4px;
+object-fit: contain;
+
+}
+
+.identification-grid {
+
+display: grid;
+grid-template-columns: minmax(180px, 1fr) minmax(220px, 0.9fr);
+gap: 0.85rem 1.25rem;
+align-items: start;
+
+}
+
+.identification-answer label,
+.identification-confidence p {
+
+display: block;
+margin: 0 0 0.35rem;
+font-weight: bold;
+
+}
+
+.profile-guess-input {
+
+width: 100%;
+
+}
+
+.identification-confidence {
+
+padding-top: 0.05rem;
+
+}
+
+.confidence-option {
+
+display: block;
+margin: 0 0 0.3rem;
+font-weight: normal;
+line-height: 1.35;
+
+}
+
+.confidence-option input {
+
+margin-right: 0.35rem;
+
+}
+
 .slot {
 
 border: 1px solid #333;
@@ -437,6 +501,19 @@ gap: 0.25rem;
 .inline-prefer-option {
 
 padding-bottom: 0;
+
+}
+
+.single-profile-section,
+.identification-grid {
+
+grid-template-columns: 1fr;
+
+}
+
+.single-profile-section .profile-image {
+
+max-width: 180px;
 
 }
 

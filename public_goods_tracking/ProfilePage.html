@@ -1,36 +1,117 @@
 {{ extends "global/Page.html" }}
-{{ block title }}Profile Information{{ endblock }}
+{{ block title }}Other Player Identification{{ endblock }}
 
 {{ block content }}
 
-<h3>Other Players' Demographics</h3>
-<p>Please identify the following information about each player you were grouped with during the game.</p>
+<h3>{{ target_info.label }}</h3>
+<p>
+  Player {{ current_target_index }} of {{ total_targets }}. Please identify the following
+  information about this player, who was in one of your groups during the game.
+</p>
 
-{{ for target in targets_info }}
-  <div class="profile-section">
-    <h4>{{ target.label }}</h4>
-    <img src="{{ static target.image }}" alt="{{ target.label }}" class="profile-image">
-    <p><b>Guess what {{ target.label }} identifies as.</b></p>
-    
-    <div class="guess-fields">
-      <label>Age:</label>
-      <input type="number" class="form-control guess-age" data-target="{{ target.id }}" min="{{ C.MIN_AGE }}" max="{{ C.MAX_AGE }}">
+<div class="profile-section single-profile-section" data-target="{{ target_info.id }}">
+  <img src="{{ static target_info.image }}" alt="{{ target_info.label }}" class="profile-image">
 
-      <label>Hispanic or Latino:</label>
-      <input type="text" class="form-control guess-ethnicity" data-target="{{ target.id }}">
+  <div class="identification-grid">
+    <div class="identification-answer">
+      <label for="guess-age">Age</label>
+      <input
+        type="number"
+        class="form-control profile-guess-input"
+        id="guess-age"
+        data-field="age"
+        min="{{ C.MIN_AGE }}"
+        max="{{ C.MAX_AGE }}"
+        required
+      >
+    </div>
+    <div class="identification-confidence">
+      <p>How sure are you?</p>
+      {{ for choice in confidence_choices }}
+        <label class="confidence-option">
+          <input type="radio" name="age_confidence" value="{{ choice.value }}" required>
+          {{ choice.label }}
+        </label>
+      {{ endfor }}
+    </div>
 
-      <label>Race:</label>
-      <input type="text" class="form-control guess-race" data-target="{{ target.id }}">
-      
-      <label>Gender:</label>
-      <input type="text" class="form-control guess-gender" data-target="{{ target.id }}">
-      
-      <label>Sexuality:</label>
-      <input type="text" class="form-control guess-sexuality" data-target="{{ target.id }}">
-      
+    <div class="identification-answer">
+      <label for="guess-ethnicity">Hispanic or Latino</label>
+      <select class="form-select profile-guess-input" id="guess-ethnicity" data-field="ethnicity" required>
+        <option value=""></option>
+        {{ for choice in ethnicity_choices }}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {{ endfor }}
+      </select>
+    </div>
+    <div class="identification-confidence">
+      <p>How sure are you?</p>
+      {{ for choice in confidence_choices }}
+        <label class="confidence-option">
+          <input type="radio" name="ethnicity_confidence" value="{{ choice.value }}" required>
+          {{ choice.label }}
+        </label>
+      {{ endfor }}
+    </div>
+
+    <div class="identification-answer">
+      <label for="guess-race">Race</label>
+      <select class="form-select profile-guess-input" id="guess-race" data-field="race" required>
+        <option value=""></option>
+        {{ for choice in race_choices }}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {{ endfor }}
+      </select>
+    </div>
+    <div class="identification-confidence">
+      <p>How sure are you?</p>
+      {{ for choice in confidence_choices }}
+        <label class="confidence-option">
+          <input type="radio" name="race_confidence" value="{{ choice.value }}" required>
+          {{ choice.label }}
+        </label>
+      {{ endfor }}
+    </div>
+
+    <div class="identification-answer">
+      <label for="guess-gender">Gender</label>
+      <select class="form-select profile-guess-input" id="guess-gender" data-field="gender" required>
+        <option value=""></option>
+        {{ for choice in gender_choices }}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {{ endfor }}
+      </select>
+    </div>
+    <div class="identification-confidence">
+      <p>How sure are you?</p>
+      {{ for choice in confidence_choices }}
+        <label class="confidence-option">
+          <input type="radio" name="gender_confidence" value="{{ choice.value }}" required>
+          {{ choice.label }}
+        </label>
+      {{ endfor }}
+    </div>
+
+    <div class="identification-answer">
+      <label for="guess-sexuality">Sexuality</label>
+      <select class="form-select profile-guess-input" id="guess-sexuality" data-field="sexuality" required>
+        <option value=""></option>
+        {{ for choice in sexuality_choices }}
+          <option value="{{ choice.value }}">{{ choice.label }}</option>
+        {{ endfor }}
+      </select>
+    </div>
+    <div class="identification-confidence">
+      <p>How sure are you?</p>
+      {{ for choice in confidence_choices }}
+        <label class="confidence-option">
+          <input type="radio" name="sexuality_confidence" value="{{ choice.value }}" required>
+          {{ choice.label }}
+        </label>
+      {{ endfor }}
     </div>
   </div>
-{{ endfor }}
+</div>
 
 <div class="hidden-field">
   {{ formfield 'profile_guesses_json' }}
@@ -38,6 +119,25 @@
 
 {{ next_button }}
 
-<script>{{ include_sibling 'profile.js' }}</script>
+<script>
+  (function () {
+    const section = document.querySelector('.single-profile-section');
+    const hiddenInput = document.querySelector('#id_profile_guesses_json');
+    const form = hiddenInput.closest('form');
+    const targetId = section.dataset.target;
+    const fields = ['age', 'ethnicity', 'race', 'gender', 'sexuality'];
+
+    form.addEventListener('submit', function () {
+      const guess = {};
+      fields.forEach(function (fieldName) {
+        const answerInput = section.querySelector(`[data-field="${fieldName}"]`);
+        const confidenceInput = section.querySelector(`input[name="${fieldName}_confidence"]:checked`);
+        guess[fieldName] = answerInput.value;
+        guess[`${fieldName}_confidence`] = confidenceInput ? confidenceInput.value : '';
+      });
+      hiddenInput.value = JSON.stringify({[targetId]: guess});
+    });
+  })();
+</script>
 
 {{ endblock }}

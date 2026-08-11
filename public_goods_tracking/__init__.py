@@ -13,6 +13,7 @@ class C(BaseConstants):
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 10
     NUM_PERIODS = NUM_ROUNDS // 2
+    MAX_PROFILE_TARGETS = NUM_PERIODS * (PLAYERS_PER_GROUP - 1)
     ENDOWMENT = 10
     MULTIPLIER = 1.6
     BALLS_PER_ESTIMATE = 10
@@ -37,6 +38,15 @@ class C(BaseConstants):
     ]
     SELF_RACE_CHOICES = RACE_CHOICES + [
         ['Prefer not to say', 'Prefer not to say'],
+    ]
+    ETHNICITY_GUESS_CHOICES = [
+        ['Yes', 'Yes'],
+        ['No', 'No'],
+    ]
+    CONFIDENCE_CHOICES = [
+        ['Sure', 'Sure'],
+        ['Unsure', 'Unsure'],
+        ['Neither sure or unsure', 'Neither sure or unsure'],
     ]
     SEXUALITY_CHOICES = [
         ['Straight', 'Straight'],
@@ -206,10 +216,15 @@ class ProfileGuess(ExtraModel):
     guesser = models.Link(Player)
     target_player_id = models.IntegerField()
     guessed_gender = models.StringField()
+    gender_confidence = models.StringField(blank=True)
     guessed_race = models.StringField()
+    race_confidence = models.StringField(blank=True)
     guessed_ethnicity = models.StringField()
+    ethnicity_confidence = models.StringField(blank=True)
     guessed_age = models.IntegerField()
+    age_confidence = models.StringField(blank=True)
     guessed_sexuality = models.StringField()
+    sexuality_confidence = models.StringField(blank=True)
 
 
 def period_number(round_number):
@@ -260,6 +275,14 @@ def encountered_players(player: Player):
             player_number = stable_player_number(group_player)
             players_by_number[player_number] = group_player
     return [players_by_number[player_number] for player_number in sorted(players_by_number)]
+
+
+def encountered_player_for_slot(player: Player, slot_number):
+    targets = encountered_players(player)
+    index = slot_number - 1
+    if 0 <= index < len(targets):
+        return targets[index]
+    return None
 
 
 def assign_target_slots(player: Player):
@@ -335,17 +358,24 @@ def save_profile_guess(player: Player, slot_number):
     )
 
 
-def save_profile_guesses_json(player: Player):
+def save_profile_guesses_json(player: Player, target_number=None):
     guesses = json.loads(player.profile_guesses_json or '{}')
     for target_number_str, guess in guesses.items():
+        if target_number is not None and int(target_number_str) != target_number:
+            continue
         ProfileGuess.create(
             guesser=player,
             target_player_id=int(target_number_str),
             guessed_gender=guess.get('gender', ''),
+            gender_confidence=guess.get('gender_confidence', ''),
             guessed_race=guess.get('race', ''),
+            race_confidence=guess.get('race_confidence', ''),
             guessed_ethnicity=guess.get('ethnicity', ''),
+            ethnicity_confidence=guess.get('ethnicity_confidence', ''),
             guessed_age=int(guess.get('age')),
+            age_confidence=guess.get('age_confidence', ''),
             guessed_sexuality=guess.get('sexuality', ''),
+            sexuality_confidence=guess.get('sexuality_confidence', ''),
         )
 
 
@@ -574,51 +604,112 @@ class SelfIdentification(Page):
             player.ethnicity = 'Prefer not to say'
 
 
-class ProfilePage(Page):
+def template_choices(choices):
+    return [dict(value=value, label=label) for value, label in choices]
+
+
+class BaseProfilePage(Page):
+    slot_number = None
+    template_name = 'public_goods_tracking/ProfilePage.html'
     form_model = 'player'
     form_fields = ['profile_guesses_json']
 
-    @staticmethod
-    def is_displayed(player: Player):
-        return player.round_number == C.NUM_ROUNDS
+    @classmethod
+    def is_displayed(cls, player: Player):
+        return (
+            player.round_number == C.NUM_ROUNDS
+            and encountered_player_for_slot(player, cls.slot_number) is not None
+        )
 
-    @staticmethod
-    def vars_for_template(player: Player):
-        targets_info = [
-            dict(
-                id=stable_player_number(target),
-                label=f'Player {stable_player_number(target)}',
-                image=player_image_path(stable_player_number(target)),
-            )
-            for target in encountered_players(player)
-        ]
-        return dict(targets_info=targets_info)
+    @classmethod
+    def vars_for_template(cls, player: Player):
+        target = encountered_player_for_slot(player, cls.slot_number)
+        target_number = stable_player_number(target)
+        return dict(
+            target_info=dict(
+                id=target_number,
+                label=f'Player {target_number}',
+                image=player_image_path(target_number),
+            ),
+            current_target_index=cls.slot_number,
+            total_targets=len(encountered_players(player)),
+            gender_choices=template_choices(C.GENDER_CHOICES),
+            ethnicity_choices=template_choices(C.ETHNICITY_GUESS_CHOICES),
+            race_choices=template_choices(C.RACE_CHOICES),
+            sexuality_choices=template_choices(C.SEXUALITY_CHOICES),
+            confidence_choices=template_choices(C.CONFIDENCE_CHOICES),
+        )
 
-    @staticmethod
-    def error_message(player: Player, values):
-        targets = encountered_players(player)
+    @classmethod
+    def error_message(cls, player: Player, values):
+        target = encountered_player_for_slot(player, cls.slot_number)
+        target_number = str(stable_player_number(target))
         try:
             guesses = json.loads(values.get('profile_guesses_json') or '{}')
         except json.JSONDecodeError:
             return 'Your guesses could not be read. Please try again.'
 
         required_fields = ['age', 'ethnicity', 'race', 'gender', 'sexuality']
-        for target in targets:
-            target_number = str(stable_player_number(target))
-            guess = guesses.get(target_number, {})
-            for field_name in required_fields:
-                if guess.get(field_name) in [None, '']:
-                    return 'You must answer every identification question before continuing.'
-            try:
-                age_guess = int(guess.get('age'))
-            except (TypeError, ValueError):
-                return 'Age guesses must be whole numbers.'
-            if age_guess < C.MIN_AGE or age_guess > C.MAX_AGE:
-                return f'Age guesses must be between {C.MIN_AGE} and {C.MAX_AGE}.'
+        confidence_fields = [f'{field_name}_confidence' for field_name in required_fields]
+        guess = guesses.get(target_number, {})
+        for field_name in required_fields:
+            if guess.get(field_name) in [None, '']:
+                return 'You must answer every identification question before continuing.'
+        for field_name in confidence_fields:
+            if guess.get(field_name) in [None, '']:
+                return 'You must answer how sure you are for every identification question.'
 
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened):
-        save_profile_guesses_json(player)
+        try:
+            age_guess = int(guess.get('age'))
+        except (TypeError, ValueError):
+            return 'Age guesses must be whole numbers.'
+        if age_guess < C.MIN_AGE or age_guess > C.MAX_AGE:
+            return f'Age guesses must be between {C.MIN_AGE} and {C.MAX_AGE}.'
+
+    @classmethod
+    def before_next_page(cls, player: Player, timeout_happened):
+        target = encountered_player_for_slot(player, cls.slot_number)
+        save_profile_guesses_json(player, stable_player_number(target))
+
+
+class ProfilePage(BaseProfilePage):
+    slot_number = 1
+
+
+class ProfilePage2(BaseProfilePage):
+    slot_number = 2
+
+
+class ProfilePage3(BaseProfilePage):
+    slot_number = 3
+
+
+class ProfilePage4(BaseProfilePage):
+    slot_number = 4
+
+
+class ProfilePage5(BaseProfilePage):
+    slot_number = 5
+
+
+class ProfilePage6(BaseProfilePage):
+    slot_number = 6
+
+
+class ProfilePage7(BaseProfilePage):
+    slot_number = 7
+
+
+class ProfilePage8(BaseProfilePage):
+    slot_number = 8
+
+
+class ProfilePage9(BaseProfilePage):
+    slot_number = 9
+
+
+class ProfilePage10(BaseProfilePage):
+    slot_number = 10
 
 
 class Contribution(Page):
@@ -969,5 +1060,14 @@ page_sequence = [
     AfterEstimation,
     SelfIdentification,
     ProfilePage,
+    ProfilePage2,
+    ProfilePage3,
+    ProfilePage4,
+    ProfilePage5,
+    ProfilePage6,
+    ProfilePage7,
+    ProfilePage8,
+    ProfilePage9,
+    ProfilePage10,
     Results,
 ]

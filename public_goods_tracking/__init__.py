@@ -35,6 +35,9 @@ class C(BaseConstants):
         ['Native American', 'Native American'],
         ['Other', 'Other'],
     ]
+    SELF_RACE_CHOICES = RACE_CHOICES + [
+        ['Prefer not to say', 'Prefer not to say'],
+    ]
     SEXUALITY_CHOICES = [
         ['Straight', 'Straight'],
         ['Gay', 'Gay'],
@@ -97,7 +100,7 @@ class Player(BasePlayer):
         blank=True,
     )
     race = models.StringField(
-        choices=C.RACE_CHOICES,
+        choices=C.SELF_RACE_CHOICES,
         label='What is your Race?',
         blank=True,
     )
@@ -105,11 +108,21 @@ class Player(BasePlayer):
         label='Are you Hispanic or Latino?',
         blank=True,
     )
+    ethnicity_prefer_not_to_say = models.BooleanField(
+        label='Prefer not to say',
+        blank=True,
+        initial=False,
+    )
     age = models.IntegerField(
         label='What is your age?',
         min=C.MIN_AGE,
         max=C.MAX_AGE,
         blank=True,
+    )
+    age_prefer_not_to_say = models.BooleanField(
+        label='Prefer not to say',
+        blank=True,
+        initial=False,
     )
     sexuality = models.StringField(
         choices=C.SEXUALITY_CHOICES,
@@ -522,7 +535,15 @@ class PhotoVerification(Page):
 
 class SelfIdentification(Page):
     form_model = 'player'
-    form_fields = ['age', 'ethnicity', 'race', 'gender', 'sexuality']
+    form_fields = [
+        'age',
+        'age_prefer_not_to_say',
+        'ethnicity',
+        'ethnicity_prefer_not_to_say',
+        'race',
+        'gender',
+        'sexuality',
+    ]
 
     @staticmethod
     def is_displayed(player: Player):
@@ -530,11 +551,27 @@ class SelfIdentification(Page):
 
     @staticmethod
     def error_message(player: Player, values):
-        required_fields = ['age', 'ethnicity', 'race', 'gender', 'sexuality']
+        if not values.get('age_prefer_not_to_say') and values.get('age') in [None, '']:
+            return 'You must answer the age question or select prefer not to say.'
+
+        if (
+            not values.get('ethnicity_prefer_not_to_say')
+            and values.get('ethnicity') in [None, '']
+        ):
+            return 'You must answer the Hispanic or Latino question or select prefer not to say.'
+
+        required_fields = ['race', 'gender', 'sexuality']
         for field_name in required_fields:
             value = values.get(field_name)
             if value in [None, '']:
                 return 'You must answer every self-identification question before continuing.'
+
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened):
+        if player.age_prefer_not_to_say:
+            player.age = None
+        if player.ethnicity_prefer_not_to_say:
+            player.ethnicity = 'Prefer not to say'
 
 
 class ProfilePage(Page):

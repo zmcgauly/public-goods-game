@@ -4,8 +4,24 @@
 {{ block content }}
 <p>Please answer the following questions about yourself before the game begins.</p>
 
-{{ formfield 'age' }}
-{{ formfield 'ethnicity' }}
+<div class="inline-prefer-row">
+  <div class="inline-prefer-main">
+    {{ formfield 'age' }}
+  </div>
+  <div class="inline-prefer-option">
+    {{ formfield 'age_prefer_not_to_say' }}
+  </div>
+</div>
+
+<div class="inline-prefer-row">
+  <div class="inline-prefer-main">
+    {{ formfield 'ethnicity' }}
+  </div>
+  <div class="inline-prefer-option">
+    {{ formfield 'ethnicity_prefer_not_to_say' }}
+  </div>
+</div>
+
 {{ formfield 'race' }}
 {{ formfield 'gender' }}
 {{ formfield 'sexuality' }}

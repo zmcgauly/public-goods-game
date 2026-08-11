@@ -88,6 +88,29 @@ font-weight: bold;
 display: none;
 }
 
+.inline-prefer-row {
+
+display: grid;
+grid-template-columns: minmax(0, 1fr) max-content;
+gap: 1rem;
+align-items: end;
+margin-bottom: 1rem;
+
+}
+
+.inline-prefer-row .form-group {
+
+margin-bottom: 0;
+
+}
+
+.inline-prefer-option {
+
+padding-bottom: 0.4rem;
+white-space: nowrap;
+
+}
+
 .notice-panel {
 
 border: 1px solid #cbd5e1;
@@ -399,5 +422,22 @@ max-width: 200px;
 height: auto;
 display: block;
 margin: 1rem 0;
+
+}
+
+@media (max-width: 640px) {
+
+.inline-prefer-row {
+
+grid-template-columns: 1fr;
+gap: 0.25rem;
+
+}
+
+.inline-prefer-option {
+
+padding-bottom: 0;
+
+}
 
 }

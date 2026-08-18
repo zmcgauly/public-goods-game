@@ -250,6 +250,7 @@ def player_image_path(player_number):
         3: 'Player_3_20260818.png',
         4: 'Player_4_20260818.png',
         5: 'Player_5_20260818.png',
+        6: 'Player_6_20260818.png',
     }
     updated_image = updated_images.get(player_number)
     if updated_image:

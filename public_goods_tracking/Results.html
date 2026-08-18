@@ -4,7 +4,8 @@
 {{ block content }}
 <h3>Selected Period for Guessing Payoff</h3>
 <p>Period <b>{{ selected_period }}</b> was randomly selected for your guessing payoff.</p>
-<p>Guessing payoff from that period: <b>{{ guessing_payoff }}</b> balls.</p>
+<p>Guessing payoff from that period: <b>{{ guessing_payoff_points }}</b> points.</p>
+<p>At ${{ point_dollar_value }} per point, your guessing payoff is <b>{{ guessing_payoff_cash }}</b>.</p>
 
 <h3>Selected Period Summary</h3>
 {{ for round_record in selected_round_records }}
@@ -14,12 +15,12 @@
     group total = {{ round_record.group.total_contribution }},
     share = {{ round_record.group.individual_share }},
     round payoff = {{ round_record.round_payoff }},
-    estimation payoff = {{ round_record.estimation_payoff }}
+    estimation payoff = {{ round_record.estimation_payoff }} points
   </p>
 {{ endfor }}
 
-<h3>Total Payoff</h3>
-<p><b>{{ total_game_payoff }}</b></p>
+<h3>Total Decision Payment</h3>
+<p><b>{{ total_decision_payment_cash }}</b></p>
 
 <p class="experiment-complete-message">
   The experiment is now over. Please find the experiment lead to collect your payment.

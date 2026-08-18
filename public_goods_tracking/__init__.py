@@ -18,6 +18,7 @@ class C(BaseConstants):
     MULTIPLIER = 1.6
     BALLS_PER_ESTIMATE = 10
     REWARD_PER_BALL = 1
+    POINT_DOLLAR_VALUE = 0.20
     MIN_AGE = 18
     MAX_AGE = 100
 
@@ -46,7 +47,7 @@ class C(BaseConstants):
     CONFIDENCE_CHOICES = [
         ['Sure', 'Sure'],
         ['Unsure', 'Unsure'],
-        ['Neither sure or unsure', 'Neither sure or unsure'],
+        ['Neither sure nor unsure', 'Neither sure nor unsure'],
     ]
     SEXUALITY_CHOICES = [
         ['Straight', 'Straight'],
@@ -386,7 +387,6 @@ def calculate_round_payoffs(group: Group):
 
     for player in group.get_players():
         player.round_payoff = C.ENDOWMENT - player.contribution + group.individual_share
-        player.participant.payoff += cu(player.round_payoff)
 
 
 def calculate_estimation_payoffs(group: Group):
@@ -410,6 +410,10 @@ def selected_period_guessing_payoff(player: Player):
     selected_period = player.session.selected_payoff_period
     selected_rounds = [selected_period * 2 - 1, selected_period * 2]
     return sum(player.in_round(round_number).estimation_payoff for round_number in selected_rounds)
+
+
+def format_dollar_amount(amount):
+    return f'${amount:.2f}'
 
 
 INSTRUCTION_QUIZ_QUESTIONS = [
@@ -1107,9 +1111,10 @@ class Results(Page):
     @staticmethod
     def vars_for_template(player: Player):
         selected_period = player.session.selected_payoff_period
-        guessing_payoff = selected_period_guessing_payoff(player)
+        guessing_payoff_points = selected_period_guessing_payoff(player)
+        guessing_payoff_cash = guessing_payoff_points * C.POINT_DOLLAR_VALUE
         if not getattr(player.participant, 'selected_period_guessing_added', False):
-            player.participant.payoff += cu(guessing_payoff)
+            player.participant.payoff += cu(guessing_payoff_points)
             player.participant.selected_period_guessing_added = True
 
         selected_rounds = [selected_period * 2 - 1, selected_period * 2]
@@ -1119,7 +1124,11 @@ class Results(Page):
             selected_period=selected_period,
             selected_round_records=selected_round_records,
             total_game_payoff=player.participant.payoff,
-            guessing_payoff=guessing_payoff,
+            total_decision_payment_cash=format_dollar_amount(guessing_payoff_cash),
+            guessing_payoff=guessing_payoff_points,
+            guessing_payoff_points=guessing_payoff_points,
+            guessing_payoff_cash=format_dollar_amount(guessing_payoff_cash),
+            point_dollar_value=f'{C.POINT_DOLLAR_VALUE:.2f}',
         )
 
 

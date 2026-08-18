@@ -17,6 +17,7 @@ SESSION_CONFIGS = [
 ]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
+DEBUG = False
 USE_POINTS = True
 DEMO_PAGE_INTRO_HTML = ''
 PARTICIPANT_FIELDS = ['selected_period_guessing_added']

@@ -44,6 +44,9 @@ class C(BaseConstants):
         ['Yes', 'Yes'],
         ['No', 'No'],
     ]
+    SELF_ETHNICITY_CHOICES = ETHNICITY_GUESS_CHOICES + [
+        ['Prefer not to say', 'Prefer not to say'],
+    ]
     CONFIDENCE_CHOICES = [
         ['Sure', 'Sure'],
         ['Unsure', 'Unsure'],
@@ -116,7 +119,9 @@ class Player(BasePlayer):
         blank=True,
     )
     ethnicity = models.StringField(
+        choices=C.SELF_ETHNICITY_CHOICES,
         label='Are you Hispanic or Latino?',
+        widget=widgets.RadioSelect,
         blank=True,
     )
     ethnicity_prefer_not_to_say = models.BooleanField(
@@ -653,7 +658,6 @@ class SelfIdentification(Page):
         'age',
         'age_prefer_not_to_say',
         'ethnicity',
-        'ethnicity_prefer_not_to_say',
         'race',
         'gender',
         'sexuality',
@@ -668,13 +672,7 @@ class SelfIdentification(Page):
         if not values.get('age_prefer_not_to_say') and values.get('age') in [None, '']:
             return 'You must answer the age question or select prefer not to say.'
 
-        if (
-            not values.get('ethnicity_prefer_not_to_say')
-            and values.get('ethnicity') in [None, '']
-        ):
-            return 'You must answer the Hispanic or Latino question or select prefer not to say.'
-
-        required_fields = ['race', 'gender', 'sexuality']
+        required_fields = ['ethnicity', 'race', 'gender', 'sexuality']
         for field_name in required_fields:
             value = values.get(field_name)
             if value in [None, '']:
@@ -684,8 +682,7 @@ class SelfIdentification(Page):
     def before_next_page(player: Player, timeout_happened):
         if player.age_prefer_not_to_say:
             player.age = None
-        if player.ethnicity_prefer_not_to_say:
-            player.ethnicity = 'Prefer not to say'
+        player.ethnicity_prefer_not_to_say = player.ethnicity == 'Prefer not to say'
 
 
 def template_choices(choices):

@@ -2,7 +2,7 @@
 {{ block title }}Self Identification{{ endblock }}
 
 {{ block content }}
-<p>Please answer the following questions about yourself before the game begins.</p>
+<p>Please answer the following questions about yourself.</p>
 
 <div class="inline-prefer-row">
   <div class="inline-prefer-main">
@@ -13,14 +13,7 @@
   </div>
 </div>
 
-<div class="inline-prefer-row">
-  <div class="inline-prefer-main">
-    {{ formfield 'ethnicity' }}
-  </div>
-  <div class="inline-prefer-option">
-    {{ formfield 'ethnicity_prefer_not_to_say' }}
-  </div>
-</div>
+{{ formfield 'ethnicity' }}
 
 {{ formfield 'race' }}
 {{ formfield 'gender' }}

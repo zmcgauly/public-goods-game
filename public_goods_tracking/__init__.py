@@ -244,19 +244,6 @@ def is_full_question_round(round_number):
 def player_image_path(player_number):
     static_root = os.path.join(os.path.dirname(os.path.dirname(__file__)), '_static')
     image_dir = os.path.join(static_root, 'player_images')
-    updated_images = {
-        1: 'Player_1_20260818.jpg',
-        2: 'Player_2_20260818.png',
-        3: 'Player_3_20260818.png',
-        4: 'Player_4_20260818.png',
-        5: 'Player_5_20260818.png',
-        6: 'Player_6_20260818.png',
-        7: 'Player_7_20260818.png',
-        8: 'Player_8_20260818.png',
-    }
-    updated_image = updated_images.get(player_number)
-    if updated_image:
-        return f'player_images/{updated_image}'
 
     exact_name = f'Player_{player_number}.jpg'
     exact_path = os.path.join(image_dir, exact_name)
